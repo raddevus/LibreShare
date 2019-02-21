@@ -63,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseApp.initializeApp(getApplicationContext());
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("message");
+
+        myRef.setValue("Hello, World!");
+
     }
 
 
@@ -70,13 +76,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Write a message to the database
-        FirebaseApp.initializeApp(getApplicationContext());
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!");
         return true;
     }
 

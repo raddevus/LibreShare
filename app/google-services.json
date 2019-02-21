@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "122826133671",
+    "firebase_url": "https://libreshare-792f3.firebaseio.com",
+    "project_id": "libreshare-792f3",
+    "storage_bucket": "libreshare-792f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122826133671:android:ef71b71ea175474c",
+        "android_client_info": {
+          "package_name": "us.raddev.libreshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122826133671-9rvc5f1p9i4fjl3kpcvlmlnans0b2238.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcUGJB0a7nmn3w6cVjdX2Vr_VVvBUua4w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
