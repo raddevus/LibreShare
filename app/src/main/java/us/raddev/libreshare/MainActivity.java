@@ -60,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Random rand = new Random();
+                int n = rand.nextInt(50);
+                String outVal = String.valueOf(n);
+                outVal += ":" + String.valueOf(rand.nextInt(50)) + ":" + String.valueOf(rand.nextInt(50));
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("message");
+                myRef.setValue(outVal);
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -131,9 +138,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            int section = getArguments().getInt(ARG_SECTION_NUMBER);
+            View rootView = null;
+            switch (section){
+                case 1:{
+                    rootView = inflater.inflate(R.layout.fragment_first, container, false);
+                    //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+                    //textView.setText(getString(R.string.section_format, section));
+                    break;
+                }
+                default:{
+                    rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                    TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+                    textView.setText(getString(R.string.section_format, section));
+                }
+            }
+
             return rootView;
         }
     }
@@ -158,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
     }
 }
