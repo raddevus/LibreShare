@@ -22,6 +22,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -88,6 +90,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Random rand = new Random();
+            int n = rand.nextInt(50);
+            String outVal = String.valueOf(n);
+            outVal += ":" + String.valueOf(rand.nextInt(50)) + ":" + String.valueOf(rand.nextInt(50));
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("message");
+            myRef.setValue(outVal);
             return true;
         }
 
