@@ -50,7 +50,7 @@ public class Config {
             secureRandom.nextBytes(allBytes);
             StringBuilder sb = new StringBuilder();
             for (byte b : allBytes ){
-                sb.append(String.format("%02X ", b));
+                sb.append(String.format("%02X", b));
             }
             return sb.toString();
         }
