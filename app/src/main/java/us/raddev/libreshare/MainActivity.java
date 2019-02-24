@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Random rand = new Random();
                 int n = rand.nextInt(50);
-                String outVal = String.valueOf(n);
+                String outVal = String.valueOf(Config.generateId());
                 outVal += ":" + String.valueOf(rand.nextInt(50)) + ":" + String.valueOf(rand.nextInt(50));
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
