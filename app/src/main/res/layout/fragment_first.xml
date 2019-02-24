@@ -11,13 +11,12 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/remoteListIdEditText"
-        android:autofillHints="remote list ID"/>
+        android:id="@+id/remoteListIdEditText" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/newItemEditText"
-        android:autofillHints="new item text"/>
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
