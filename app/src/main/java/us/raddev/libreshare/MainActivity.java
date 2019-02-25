@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    public static Config mConfig;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mConfig = new Config(getApplicationContext());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -73,10 +77,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FirebaseApp.initializeApp(getApplicationContext());
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!");
 
     }
 
@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+
+        private TextView currentUserId;
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -143,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
             switch (section){
                 case 1:{
                     rootView = inflater.inflate(R.layout.fragment_first, container, false);
+                    currentUserId = (TextView)rootView.findViewById(R.id.currentUserIdTextView);
+                    currentUserId.setText(mConfig.getUserId());
                     //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
                     //textView.setText(getString(R.string.section_format, section));
                     break;

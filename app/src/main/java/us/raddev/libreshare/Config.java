@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 import static java.lang.Long.valueOf;
 
@@ -24,17 +23,17 @@ public class Config {
         ownerId = configPrefs.getString("ownerId", null);
         configPrefs = context.getApplicationContext().getSharedPreferences("userId", Context.MODE_PRIVATE);
         userId = configPrefs.getString("userId", null);
-        if (userId == null) {
+        if (getUserId() == null) {
             userId = generateId();
             configPrefs =
                     context.getApplicationContext().getSharedPreferences("userId", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = configPrefs.edit();
-            edit.putString("userId",userId);
+            edit.putString("userId", getUserId());
             edit.commit();
-            Log.d("MainActivity", "Committed: " + userId);
+            Log.d("MainActivity", "Committed: " + getUserId());
         }
         else {
-            Log.d("MainActivity", "loaded userId : " + userId);
+            Log.d("MainActivity", "loaded userId : " + getUserId());
         }
 
 
@@ -57,5 +56,9 @@ public class Config {
         catch (java.security.NoSuchAlgorithmException nsa){
             return "Error : " + nsa.getMessage();
         }
+    }
+
+    public String getUserId() {
+        return userId;
     }
 }
