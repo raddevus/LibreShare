@@ -10,23 +10,19 @@ import static java.lang.Long.valueOf;
 
 public class Config {
     public Config(Context context) {
-        this.context = context;
+        this._context = context;
         initPreferences();
     }
-    private Context context;
-    private String ownerId;
+    private Context _context;
     private String userId;
 
     private void initPreferences(){
-        SharedPreferences configPrefs =
-                context.getApplicationContext().getSharedPreferences("ownerId", Context.MODE_PRIVATE);
-        ownerId = configPrefs.getString("ownerId", null);
-        configPrefs = context.getApplicationContext().getSharedPreferences("userId", Context.MODE_PRIVATE);
+        SharedPreferences configPrefs = _context.getApplicationContext().getSharedPreferences("userId", Context.MODE_PRIVATE);
         userId = configPrefs.getString("userId", null);
         if (getUserId() == null) {
             userId = generateId();
             configPrefs =
-                    context.getApplicationContext().getSharedPreferences("userId", Context.MODE_PRIVATE);
+                    _context.getApplicationContext().getSharedPreferences("userId", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = configPrefs.edit();
             edit.putString("userId", getUserId());
             edit.commit();
