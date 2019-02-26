@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         private EditText newItemEditText;
         private EditText entryIdEditText;
         FirebaseDatabase database;
-        ValueEventListener postListener;
+        ValueEventListener entryListener;
         Entry entry;
 
         /**
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void registerWatcher(){
-            postListener = new ValueEventListener() {
+            entryListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // Get Post object and use the values to update the UI
@@ -219,9 +219,8 @@ public class MainActivity extends AppCompatActivity {
                     // ...
                 }
             };
-            Entry entry = new Entry();
             //DatabaseReference dbf = database.getReference();
-            database.getReference().addValueEventListener(postListener);
+            database.getReference().child(entryIdEditText.getText().toString()).addValueEventListener(entryListener);
         }
 
         public void writeNewEntry() {
