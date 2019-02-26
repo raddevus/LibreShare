@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,8 +22,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Random;
 
@@ -121,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
         private EditText newItemEditText;
         private EditText entryIdEditText;
         FirebaseDatabase database;
+        ValueEventListener postListener;
         Entry entry;
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -181,8 +187,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 case 2:
                 {
+                    database = FirebaseDatabase.getInstance();
                     rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
                     entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
+                    //registerWatcher();
                     break;
                 }
                 default:{
@@ -193,6 +201,27 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return rootView;
+        }
+
+        private void registerWatcher(){
+            postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Get Post object and use the values to update the UI
+                    Entry entry = dataSnapshot.getValue(Entry.class);
+                    entryIdEditText.setText(entry.get_allMessages().get(0));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
+            Entry entry = new Entry();
+            //DatabaseReference dbf = database.getReference();
+            database.getReference().addValueEventListener(postListener);
         }
 
         public void writeNewEntry() {
@@ -209,22 +238,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void saveEntryMessages(){
+            DatabaseReference dbf = null;
             if (entry == null){
                 entry = new Entry();
-                DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry._id);
-                dbf.setValue(entry);
+                dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
+                    dbf.setValue(entry);
+                }
+                else{
+                    dbf.push();
+                }
+                dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
+                    dbf.setValue(entry);
+                }
+                else{
+                    dbf.push();
+                }
             }
 
             if (!newItemEditText.getText().equals("")){
-                if (entry.get_allMessages() == null) {
-                    entry.startMessageList();
-                }
                 entry.get_allMessages().add(newItemEditText.getText().toString());
-                DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry._id);
-                dbf.setValue(entry.get_allMessages());
+                dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
+                    dbf.setValue(entry.get_allMessages());
+                }
 
             }
-
         }
     }
 

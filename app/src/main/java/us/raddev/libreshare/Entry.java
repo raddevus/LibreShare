@@ -27,11 +27,6 @@ public class Entry {
     public Entry(){
         // Default constructor required for calls to DataSnapshot.getValue(Entry.class)
         this._id = Config.generateId();
-    }
-
-    public void startMessageList(){
-        // I added this method because if the list is new'd up (in ctor) then
-        // it saves an empty item to the entry and I don't want that.
         this._allMessages = new ArrayList<String>();
     }
 
