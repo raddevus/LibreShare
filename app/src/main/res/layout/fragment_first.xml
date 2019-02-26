@@ -25,8 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/saveItemButton"
-            android:text="Save"
+            android:id="@+id/addNewEntryButton"
+            android:text="Add Entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/saveMessageButton"
+            android:text="Save Message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button

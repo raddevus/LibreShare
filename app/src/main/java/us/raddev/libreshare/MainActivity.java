@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     public static Config mConfig;
 
+    FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         mConfig = new Config(getApplicationContext());
 
+        database = FirebaseDatabase.getInstance();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,18 +74,13 @@ public class MainActivity extends AppCompatActivity {
                 int n = rand.nextInt(50);
                 String outVal = String.valueOf(Config.generateId());
                 outVal += ":" + String.valueOf(rand.nextInt(50)) + ":" + String.valueOf(rand.nextInt(50));
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
                 myRef.setValue(outVal);
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
-
-        FirebaseApp.initializeApp(getApplicationContext());
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             int n = rand.nextInt(50);
             String outVal = String.valueOf(n);
             outVal += ":" + String.valueOf(rand.nextInt(50)) + ":" + String.valueOf(rand.nextInt(50));
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("message");
             myRef.setValue(outVal);
             return true;
@@ -116,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
     public static class PlaceholderFragment extends Fragment {
 
         private TextView currentUserId;
+        private Button addNewEntryButton;
+        private Button saveMessageButton;
+        private EditText newItemEditText;
+        private EditText entryIdEditText;
+        FirebaseDatabase database;
+        Entry entry;
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -149,6 +155,34 @@ public class MainActivity extends AppCompatActivity {
                     currentUserId.setText(mConfig.getUserId());
                     //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
                     //textView.setText(getString(R.string.section_format, section));
+
+                    saveMessageButton = (Button)rootView.findViewById(R.id.saveMessageButton);
+                    addNewEntryButton = (Button) rootView.findViewById(R.id.addNewEntryButton);
+                    newItemEditText = (EditText)  rootView.findViewById(R.id.newItemEditText);
+
+                    addNewEntryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            writeNewEntry();
+                        }
+                    });
+
+                    saveMessageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            saveEntryMessages();
+                        }
+                    });
+
+                    FirebaseApp.initializeApp(rootView.getContext());
+                    database = FirebaseDatabase.getInstance();
+
+                    break;
+                }
+                case 2:
+                {
+                    rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
+                    entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
                     break;
                 }
                 default:{
@@ -159,6 +193,38 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return rootView;
+        }
+
+        public void writeNewEntry() {
+            entry = new Entry();
+            //DatabaseReference dbf = database.getReference(mConfig.getUserId());
+//            if (dbf == null){
+//                database.getReference().setValue(mConfig.getUserId());
+//            }
+            DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+            dbf.setValue(entry);
+//            if (dbf == null){
+//                database.getReference(mConfig.getUserId()).setValue(entry._id);
+//            }
+        }
+
+        public void saveEntryMessages(){
+            if (entry == null){
+                entry = new Entry();
+                DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                dbf.setValue(entry);
+            }
+
+            if (!newItemEditText.getText().equals("")){
+                if (entry.get_allMessages() == null) {
+                    entry.startMessageList();
+                }
+                entry.get_allMessages().add(newItemEditText.getText().toString());
+                DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                dbf.setValue(entry.get_allMessages());
+
+            }
+
         }
     }
 

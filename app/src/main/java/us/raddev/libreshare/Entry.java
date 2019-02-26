@@ -2,30 +2,47 @@ package us.raddev.libreshare;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+@IgnoreExtraProperties
 public class Entry {
-    private String _id;
-    private String ownerId;
+    public String _id;
+    private String _ownerId;
     private Context _context;
 
-    public String get_message() {
-        return _message;
+    public List<String> get_allMessages() {
+        return _allMessages;
     }
 
-    public void set_message(String _message) {
-        this._message = _message;
+    private List<String> _allMessages;
+
+    public Entry(){
+        // Default constructor required for calls to DataSnapshot.getValue(Entry.class)
+        this._id = Config.generateId();
     }
 
-    private String _message;
+    public void startMessageList(){
+        // I added this method because if the list is new'd up (in ctor) then
+        // it saves an empty item to the entry and I don't want that.
+        this._allMessages = new ArrayList<String>();
+    }
 
     public Entry(Context context, String ownerId) {
         this._context = context;
-        this.ownerId = ownerId;
+        this._ownerId = ownerId;
         this._id = Config.generateId();
     }
 
     public void initPreferences(){
         SharedPreferences configPrefs = _context.getApplicationContext().getSharedPreferences("ownerId", Context.MODE_PRIVATE);
-        ownerId = configPrefs.getString("ownerId", null);
+        _ownerId = configPrefs.getString("ownerId", null);
     }
 }
