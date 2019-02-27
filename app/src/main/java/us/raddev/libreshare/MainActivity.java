@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                     currentValue = "garbage";
 
                     RecyclerView rvEntries = (RecyclerView) rootView.findViewById(R.id.entryRecyclerView);
-
+                    getAllEntries();
                     setEntryData();
 
                     adapter = new EntryAdapter(entryList);
@@ -301,12 +301,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void setEntryData(){
-            for (int x = 0;x < 10;x++){
+            for (int x = 0;x < 2;x++){
                 entryList.add(new Entry());
             }
             Log.d("MainActivity",fdb.getReference().child(mConfig.getUserId()).toString());
-
         }
+
+        private void getAllEntries(){
+            fdb.getReference().child(mConfig.getUserId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Entry localEntry = snapshot.getValue(Entry.class);
+                            entryList.add(localEntry);
+                            Log.d("MainActivity", ".addListenerForSingleValueEvent : " + localEntry.get_id());
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+        }
+
         private void addCheckBoxes(View view){
             checkBoxLayout.removeAllViews();
             for (String s : currentEntry.get_allMessages()) {
