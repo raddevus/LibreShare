@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
@@ -136,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         private static String currentValue;
         private static Entry currentEntry;
 
+        private LinearLayout checkBoxLayout;
+
         FirebaseDatabase fdb;
         private Button getCurrentEntryButton;
 
@@ -218,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                     rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
                     entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
                     getCurrentEntryButton = (Button) rootView.findViewById(R.id.getCurrentEntry);
+                    checkBoxLayout = (LinearLayout) rootView.findViewById(R.id.check_add_layout);
                     entryIdEditText.setText("test");
                     if (currentValue != null){
                         entryIdEditText.setText(currentValue);
@@ -246,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("MainActivity", "currentValue - entrybuttonclick : " + currentValue);
                             if (currentValue != null){
                                 entryIdEditText.setText(currentValue);
+                                addCheckBoxes(view);
                             }
                         }
                     });
@@ -261,6 +267,17 @@ public class MainActivity extends AppCompatActivity {
 
             return rootView;
         }
+
+        private void addCheckBoxes(View view){
+            checkBoxLayout.removeAllViews();
+            for (String s : currentEntry.get_allMessages()) {
+                CheckBox checkBox = new CheckBox(view.getContext());
+                checkBox.setId(new Random().nextInt());
+                checkBox.setText(s);
+                checkBoxLayout.addView(checkBox);
+            }
+        }
+
         private void rw(){
             listener = new ValueEventListener() {
                 @Override
@@ -270,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
                     Entry entry = dataSnapshot.getValue(Entry.class);
                     //set latest value -
                     currentValue = entry.get_allMessages().get(0).toString();
+                    currentEntry = entry;
                     Log.d("MainActivity", "currentValue : " + currentValue);
                 }
 
