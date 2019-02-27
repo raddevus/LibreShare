@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         ValueEventListener listener;
         Entry entry;
         private static String currentValue;
+        private static Entry currentEntry;
 
         FirebaseDatabase fdb;
         private Button getCurrentEntryButton;
@@ -191,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
                             //saveEntryMessages();
                             Entry x = new Entry();
                             x.get_allMessages().add("First One");
-                            fdb.getReference().child(mConfig.getUserId()).setValue(x);
+                            fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
+                            currentEntry = x;
                         }
                     });
 
@@ -278,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                     // ...
                 }
             };
-            fdb.getReference().child(mConfig.getUserId()).addValueEventListener(listener);
+            fdb.getReference().child(mConfig.getUserId()).child(currentEntry.get_id()).addValueEventListener(listener);
         }
         private void registerWatcher(){
             entryListener = new ValueEventListener() {
