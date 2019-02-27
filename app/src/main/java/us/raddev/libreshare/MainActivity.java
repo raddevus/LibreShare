@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                             //saveEntryMessages();
                             Entry x = new Entry();
                             x.get_allMessages().add("First One");
-                            fdb.getReference().setValue(x);
+                            fdb.getReference().child(mConfig.getUserId()).setValue(x);
                         }
                     });
 
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                     // ...
                 }
             };
-            fdb.getReference().addValueEventListener(listener);
+            fdb.getReference().child(mConfig.getUserId()).addValueEventListener(listener);
         }
         private void registerWatcher(){
             entryListener = new ValueEventListener() {
