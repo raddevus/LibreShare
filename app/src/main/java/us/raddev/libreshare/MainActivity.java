@@ -28,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -124,9 +126,11 @@ public class MainActivity extends AppCompatActivity {
         private Button saveMessageButton;
         private EditText newItemEditText;
         private EditText entryIdEditText;
+        private Button deleteItemButton;
         FirebaseDatabase database;
         ValueEventListener entryListener;
         Entry entry;
+        String currentValue;
 
         /**
          * The fragment argument representing the section number for this
@@ -164,7 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
                     saveMessageButton = (Button)rootView.findViewById(R.id.saveMessageButton);
                     addNewEntryButton = (Button) rootView.findViewById(R.id.addNewEntryButton);
+                    deleteItemButton = (Button)rootView.findViewById(R.id.deleteItemButton);
                     newItemEditText = (EditText)  rootView.findViewById(R.id.newItemEditText);
+
 
                     addNewEntryButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -180,6 +186,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+                    deleteItemButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            registerWatcher();
+                        }
+                    });
+
                     FirebaseApp.initializeApp(rootView.getContext());
                     database = FirebaseDatabase.getInstance();
 
@@ -190,7 +203,9 @@ public class MainActivity extends AppCompatActivity {
                     database = FirebaseDatabase.getInstance();
                     rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
                     entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
-                    //registerWatcher();
+                    if (currentValue != null){
+                        entryIdEditText.setText(currentValue);
+                    }
                     break;
                 }
                 default:{
@@ -208,8 +223,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // Get Post object and use the values to update the UI
-                    Entry entry = dataSnapshot.getValue(Entry.class);
-                    entryIdEditText.setText(entry.get_allMessages().get(0));
+                    List<String> entry = dataSnapshot.getValue(List.class);
+                    //set latest value -
+                    currentValue = entry.get(0).toString();
                 }
 
                 @Override
@@ -220,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             //DatabaseReference dbf = database.getReference();
-            database.getReference().child(entryIdEditText.getText().toString()).addValueEventListener(entryListener);
+            database.getReference().child(mConfig.getUserId()).child(entry.get_id()).addValueEventListener(entryListener);
         }
 
         public void writeNewEntry() {
@@ -229,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 //            if (dbf == null){
 //                database.getReference().setValue(mConfig.getUserId());
 //            }
-            DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+            DatabaseReference dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
             dbf.setValue(entry);
 //            if (dbf == null){
 //                database.getReference(mConfig.getUserId()).setValue(entry._id);
@@ -240,14 +256,14 @@ public class MainActivity extends AppCompatActivity {
             DatabaseReference dbf = null;
             if (entry == null){
                 entry = new Entry();
-                dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
                 if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
                     dbf.setValue(entry);
                 }
                 else{
                     dbf.push();
                 }
-                dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
                 if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
                     dbf.setValue(entry);
                 }
@@ -258,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (!newItemEditText.getText().equals("")){
                 entry.get_allMessages().add(newItemEditText.getText().toString());
-                dbf = database.getReference(mConfig.getUserId()).child(entry._id);
+                dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
                 if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
                     dbf.setValue(entry.get_allMessages());
                 }

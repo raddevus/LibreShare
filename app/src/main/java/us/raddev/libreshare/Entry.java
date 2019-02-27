@@ -14,7 +14,11 @@ import java.util.ListIterator;
 
 @IgnoreExtraProperties
 public class Entry {
-    public String _id;
+    public String get_id() {
+        return _id;
+    }
+
+    private String _id;
     private String _ownerId;
     private Context _context;
 
@@ -22,7 +26,7 @@ public class Entry {
         return _allMessages;
     }
 
-    private List<String> _allMessages;
+    public List<String> _allMessages;
 
     public Entry(){
         // Default constructor required for calls to DataSnapshot.getValue(Entry.class)
