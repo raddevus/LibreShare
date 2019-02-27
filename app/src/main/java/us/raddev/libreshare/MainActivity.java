@@ -304,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
             for (int x = 0;x < 10;x++){
                 entryList.add(new Entry());
             }
+            Log.d("MainActivity",fdb.getReference().child(mConfig.getUserId()).toString());
 
         }
         private void addCheckBoxes(View view){
