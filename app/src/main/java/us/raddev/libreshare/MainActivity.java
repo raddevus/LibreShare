@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -129,8 +131,12 @@ public class MainActivity extends AppCompatActivity {
         private Button deleteItemButton;
         FirebaseDatabase database;
         ValueEventListener entryListener;
+        ValueEventListener listener;
         Entry entry;
-        String currentValue;
+        private static String currentValue;
+
+        FirebaseDatabase fdb;
+        private Button getCurrentEntryButton;
 
         /**
          * The fragment argument representing the section number for this
@@ -182,30 +188,66 @@ public class MainActivity extends AppCompatActivity {
                     saveMessageButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            saveEntryMessages();
+                            //saveEntryMessages();
+                            Entry x = new Entry();
+                            x.get_allMessages().add("First One");
+                            fdb.getReference().setValue(x);
                         }
                     });
 
                     deleteItemButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            registerWatcher();
+                            //registerWatcher();
+                            rw();
                         }
                     });
 
                     FirebaseApp.initializeApp(rootView.getContext());
                     database = FirebaseDatabase.getInstance();
-
+                    fdb = FirebaseDatabase.getInstance();
+                    currentValue = "garbage";
                     break;
+
                 }
                 case 2:
                 {
                     database = FirebaseDatabase.getInstance();
                     rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
                     entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
+                    getCurrentEntryButton = (Button) rootView.findViewById(R.id.getCurrentEntry);
+                    entryIdEditText.setText("test");
                     if (currentValue != null){
                         entryIdEditText.setText(currentValue);
                     }
+
+                    entryIdEditText.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (count > 2) registerWatcher();
+                        }
+
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+
+                    getCurrentEntryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("MainActivity", "In getCurrentEntryButton");
+                            Log.d("MainActivity", "currentValue - entrybuttonclick : " + currentValue);
+                            if (currentValue != null){
+                                entryIdEditText.setText(currentValue);
+                            }
+                        }
+                    });
+
                     break;
                 }
                 default:{
@@ -217,15 +259,37 @@ public class MainActivity extends AppCompatActivity {
 
             return rootView;
         }
+        private void rw(){
+            listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("MainActivity", "onDataChange()...");
+                    // Get Post object and use the values to update the UI
+                    Entry entry = dataSnapshot.getValue(Entry.class);
+                    //set latest value -
+                    currentValue = entry.get_allMessages().get(0).toString();
+                    Log.d("MainActivity", "currentValue : " + currentValue);
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
+            fdb.getReference().addValueEventListener(listener);
+        }
         private void registerWatcher(){
             entryListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // Get Post object and use the values to update the UI
-                    List<String> entry = dataSnapshot.getValue(List.class);
+                    Entry entry = dataSnapshot.getValue(Entry.class);
                     //set latest value -
-                    currentValue = entry.get(0).toString();
+                    if (entry != null && entry.get_allMessages().size() > 0) {
+                        currentValue = entry.get_allMessages().get(0).toString();
+                    }
                 }
 
                 @Override
@@ -236,7 +300,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             //DatabaseReference dbf = database.getReference();
-            database.getReference().child(mConfig.getUserId()).child(entry.get_id()).addValueEventListener(entryListener);
+            //database.getReference().child(mConfig.getUserId()).child(entry.get_id()).addValueEventListener(entryListener);
+            database.getReference().child(mConfig.getUserId()).child(entryIdEditText.getText().toString()).addValueEventListener(entryListener);
         }
 
         public void writeNewEntry() {
