@@ -130,13 +130,16 @@ public class MainActivity extends AppCompatActivity {
         private Button saveMessageButton;
         private EditText newItemEditText;
         private EditText entryIdEditText;
+        private EditText outputEditText;
         private Button deleteItemButton;
+        private Button pullEntryButton;
         FirebaseDatabase database;
         ValueEventListener entryListener;
         ValueEventListener listener;
         Entry entry;
         private static String currentValue;
         private static Entry currentEntry;
+        private static boolean specialCase = false;
 
         private LinearLayout checkBoxLayout;
 
@@ -198,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                             x.get_allMessages().add("First One");
                             fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
                             currentEntry = x;
+                            newItemEditText.setText(currentEntry.get_id());
                         }
                     });
 
@@ -205,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             //registerWatcher();
-                            rw();
+                            //rw();
+                            registerWatcherWithValue();
                         }
                     });
 
@@ -221,17 +226,19 @@ public class MainActivity extends AppCompatActivity {
                     database = FirebaseDatabase.getInstance();
                     rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
                     entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
+                    outputEditText = (EditText)  rootView.findViewById(R.id.outputEditText);
                     getCurrentEntryButton = (Button) rootView.findViewById(R.id.getCurrentEntry);
+                    pullEntryButton = (Button) rootView.findViewById(R.id.pullEntry);
                     checkBoxLayout = (LinearLayout) rootView.findViewById(R.id.check_add_layout);
                     entryIdEditText.setText("test");
                     if (currentValue != null){
                         entryIdEditText.setText(currentValue);
                     }
-
+                    fdb = FirebaseDatabase.getInstance();
                     entryIdEditText.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            if (count > 2) registerWatcher();
+
                         }
 
                         @Override
@@ -240,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         public void afterTextChanged(Editable s) {
-
+                            registerWatcherWithValue();
                         }
                     });
 
@@ -250,9 +257,18 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("MainActivity", "In getCurrentEntryButton");
                             Log.d("MainActivity", "currentValue - entrybuttonclick : " + currentValue);
                             if (currentValue != null){
-                                entryIdEditText.setText(currentValue);
+                                outputEditText.setText(currentValue);
                                 addCheckBoxes(view);
                             }
+                        }
+                    });
+
+                    pullEntryButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("MainActivity", "In pullEntry");
+                            specialCase=true;
+                            registerWatcherWithValue();
                         }
                     });
 
@@ -278,6 +294,47 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        private void registerWatcherWithValue(){
+            listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("MainActivity", "onDataChange()...");
+                    // Get Post object and use the values to update the UI
+                    Entry entry = dataSnapshot.getValue(Entry.class);
+                    //set latest value -
+                    if (currentValue != null && entry.get_allMessages().size() > 0) {
+                        currentValue = entry.get_allMessages().get(0).toString();
+                        currentEntry = entry;
+                    }
+                    if (checkBoxLayout != null) {
+                        addCheckBoxes(checkBoxLayout.getRootView());
+                    }
+                    Log.d("MainActivity", "currentValue : " + currentValue);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
+            Log.d("MainActivity", "registerWatcherWithValue...");
+            String localE = null;
+            if (entryIdEditText != null) {
+                Log.d("MainActivity", "entryIdEditText not NULL!");
+                localE = entryIdEditText.getText().toString();
+                Log.d("MainActivity", localE);
+            }
+            else {
+                Log.d("MainActivity", "entryIdEditText IS--NULL!");
+                localE = newItemEditText.getText().toString();
+                Log.d("MainActivity", localE);
+            }
+            Log.d("MainActivity", "uid : " + mConfig.getUserId().toString() + "entryId : " + localE);
+            fdb.getReference().child(mConfig.getUserId()).child(localE).addValueEventListener(listener);
+        }
+
         private void rw(){
             listener = new ValueEventListener() {
                 @Override
@@ -298,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
                     // ...
                 }
             };
+            Log.d("MainActivity", "uid : " + mConfig.getUserId().toString() + "currentEntry.get_id() : " + currentEntry.get_id());
             fdb.getReference().child(mConfig.getUserId()).child(currentEntry.get_id()).addValueEventListener(listener);
         }
         private void registerWatcher(){

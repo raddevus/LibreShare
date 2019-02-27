@@ -10,11 +10,21 @@
         android:layout_height="wrap_content"
         android:id="@+id/entryId"
         />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/outputEditText"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/getCurrentEntry"
         android:text="Update"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pullEntry"
+        android:text="Pull Entry"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
