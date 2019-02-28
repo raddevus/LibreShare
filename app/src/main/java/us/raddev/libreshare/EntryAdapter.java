@@ -23,7 +23,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.tvName);
+            name = (TextView) itemView.findViewById(R.id.entryIdTextView);
             //league = (TextView) itemView.findViewById(R.id.tvLeague);
             //yearEstablished = (TextView) itemView.findViewById(R.id.tvYear);
         }
