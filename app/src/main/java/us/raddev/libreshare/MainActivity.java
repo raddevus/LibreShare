@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     public static Config mConfig;
+    public static String ownerId;
 
     FirebaseDatabase database;
 
@@ -137,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         private EditText outputEditText;
         private Button deleteItemButton;
         private Button pullEntryButton;
+        private Button addMessageButton;
+
         FirebaseDatabase database;
         ValueEventListener entryListener;
         ValueEventListener listener;
@@ -178,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             int section = getArguments().getInt(ARG_SECTION_NUMBER);
             View rootView = null;
+            MainActivity.ownerId = mConfig.getUserId();
             switch (section){
                 case 1:{
                     rootView = inflater.inflate(R.layout.fragment_first, container, false);
@@ -239,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                     outputEditText = (EditText)  rootView.findViewById(R.id.outputEditText);
                     getCurrentEntryButton = (Button) rootView.findViewById(R.id.getCurrentEntry);
                     pullEntryButton = (Button) rootView.findViewById(R.id.pullEntry);
+                    addMessageButton = (Button)rootView.findViewById(R.id.addMessageButton);
                     checkBoxLayout = (LinearLayout) rootView.findViewById(R.id.check_add_layout);
 
                     entryIdEditText.setText("test");
@@ -282,6 +287,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+                    addMessageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("MainActivity", "In pullEntry");
+                            String newMsgTxt = outputEditText.getText().toString();
+                            if (currentEntry != null && !newMsgTxt.isEmpty()) {
+                                currentEntry.get_allMessages().add(new Message(newMsgTxt));
+                                fdb.getReference().child(MainActivity.ownerId).
+                                        child(currentEntry.get_id())
+                                        .setValue(currentEntry);
+                                outputEditText.setText("");
+                            }
+                        }
+                    });
+
                     break;
                 }
                 default:{
@@ -295,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void getAllEntries(final RecyclerView rvEntries){
-            fdb.getReference().child(mConfig.getUserId())
+            fdb.getReference().child(MainActivity.ownerId)
                 .addValueEventListener(new ValueEventListener() {
                     //changed to addValueEventListener from the
                     // .addListenerForSingleValueEvent() since I want the list to update
@@ -335,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                         for (Message msg : currentEntry.get_allMessages()){
                             if (msg.Note.equals(noteText)){
                                 msg.isComplete = localCheckBox.isChecked();
-                                fdb.getReference().child(mConfig.getUserId()).
+                                fdb.getReference().child(MainActivity.ownerId).
                                         child(currentEntry.get_id())
                                         .setValue(currentEntry);
                                 return;
@@ -379,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
             if (entryIdEditText != null) {
                 Log.d("MainActivity", "entryIdEditText not NULL!");
                 String [] allResults = entryIdEditText.getText().toString().split(":");
-                userId = allResults[0];
+                MainActivity.ownerId = userId = allResults[0];
                 entryId = allResults[1];
                 Log.d("MainActivity", userId + "--" + entryId);
                 fdb.getReference().child(userId).child(entryId).addValueEventListener(listener);
