@@ -324,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 CheckBox checkBox = new CheckBox(view.getContext());
                 checkBox.setId(new Random().nextInt());
                 checkBox.setText(m.Note);
+                checkBox.setChecked(m.isComplete);
                 checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
