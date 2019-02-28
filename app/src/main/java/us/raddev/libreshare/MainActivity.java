@@ -213,8 +213,6 @@ public class MainActivity extends AppCompatActivity {
                     deleteItemButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            //registerWatcher();
-                            //rw();
                             registerWatcherWithValue();
                         }
                     });
@@ -225,15 +223,11 @@ public class MainActivity extends AppCompatActivity {
                     currentValue = "garbage";
 
                     RecyclerView rvEntries = (RecyclerView) rootView.findViewById(R.id.entryRecyclerView);
-                    getAllEntries();
-                    setEntryData();
-
-                    adapter = new EntryAdapter(entryList);
                     RecyclerView.LayoutManager manager = new LinearLayoutManager(rootView.getContext());
                     rvEntries.setLayoutManager(manager);
-                    rvEntries.setAdapter(adapter);
-
-
+                    adapter = new EntryAdapter(entryList);
+                    getAllEntries(rvEntries);
+                    //setEntryData();
                     break;
 
                 }
@@ -300,14 +294,7 @@ public class MainActivity extends AppCompatActivity {
             return rootView;
         }
 
-        private void setEntryData(){
-            for (int x = 0;x < 2;x++){
-                entryList.add(new Entry());
-            }
-            Log.d("MainActivity",fdb.getReference().child(mConfig.getUserId()).toString());
-        }
-
-        private void getAllEntries(){
+        private void getAllEntries(final RecyclerView rvEntries){
             fdb.getReference().child(mConfig.getUserId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -315,8 +302,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Entry localEntry = snapshot.getValue(Entry.class);
-                            entryList.add(localEntry);
+                            adapter.allEntries.add(localEntry);
                             Log.d("MainActivity", ".addListenerForSingleValueEvent : " + localEntry.get_id());
+                            rvEntries.setAdapter(adapter);
                         }
                     }
                     @Override
@@ -374,53 +362,6 @@ public class MainActivity extends AppCompatActivity {
             }
             Log.d("MainActivity", "uid : " + mConfig.getUserId().toString() + "entryId : " + localE);
             fdb.getReference().child(mConfig.getUserId()).child(localE).addValueEventListener(listener);
-        }
-
-        private void rw(){
-            listener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("MainActivity", "onDataChange()...");
-                    // Get Post object and use the values to update the UI
-                    Entry entry = dataSnapshot.getValue(Entry.class);
-                    //set latest value -
-                    currentValue = entry.get_allMessages().get(0).toString();
-                    currentEntry = entry;
-                    Log.d("MainActivity", "currentValue : " + currentValue);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
-                    // ...
-                }
-            };
-            Log.d("MainActivity", "uid : " + mConfig.getUserId().toString() + "currentEntry.get_id() : " + currentEntry.get_id());
-            fdb.getReference().child(mConfig.getUserId()).child(currentEntry.get_id()).addValueEventListener(listener);
-        }
-        private void registerWatcher(){
-            entryListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Get Post object and use the values to update the UI
-                    Entry entry = dataSnapshot.getValue(Entry.class);
-                    //set latest value -
-                    if (entry != null && entry.get_allMessages().size() > 0) {
-                        currentValue = entry.get_allMessages().get(0).toString();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
-                    // ...
-                }
-            };
-            //DatabaseReference dbf = database.getReference();
-            //database.getReference().child(mConfig.getUserId()).child(entry.get_id()).addValueEventListener(entryListener);
-            database.getReference().child(mConfig.getUserId()).child(entryIdEditText.getText().toString()).addValueEventListener(entryListener);
         }
 
         public void writeNewEntry() {
