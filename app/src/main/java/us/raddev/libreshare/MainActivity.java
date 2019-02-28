@@ -374,19 +374,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             Log.d("MainActivity", "registerWatcherWithValue...");
-            String localE = null;
+            String userId = null;
+            String entryId = null;
             if (entryIdEditText != null) {
                 Log.d("MainActivity", "entryIdEditText not NULL!");
-                localE = entryIdEditText.getText().toString();
-                Log.d("MainActivity", localE);
+                String [] allResults = entryIdEditText.getText().toString().split(":");
+                userId = allResults[0];
+                entryId = allResults[1];
+                Log.d("MainActivity", userId + "--" + entryId);
+                fdb.getReference().child(userId).child(entryId).addValueEventListener(listener);
             }
             else {
                 Log.d("MainActivity", "entryIdEditText IS--NULL!");
-                localE = newItemEditText.getText().toString();
-                Log.d("MainActivity", localE);
+                entryId = newItemEditText.getText().toString();
+                Log.d("MainActivity", entryId);
+                fdb.getReference().child(mConfig.getUserId()).child(entryId).addValueEventListener(listener);
+                Log.d("MainActivity", "uid : " + mConfig.getUserId().toString() + "entryId : " + entryId);
             }
-            Log.d("MainActivity", "uid : " + mConfig.getUserId().toString() + "entryId : " + localE);
-            fdb.getReference().child(mConfig.getUserId()).child(localE).addValueEventListener(listener);
         }
 
         public void writeNewEntry() {

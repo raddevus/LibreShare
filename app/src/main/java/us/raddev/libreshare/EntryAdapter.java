@@ -1,12 +1,18 @@
 package us.raddev.libreshare;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+
+import static us.raddev.libreshare.MainActivity.mConfig;
 
 public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
     public List<Entry> allEntries;
@@ -19,14 +25,32 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView entryTextView, league, yearEstablished;
+        TextView entryTextView, league, yearEstablished, currentUserId;
 
         public ViewHolder(View itemView) {
             super(itemView);
             entryTextView = (TextView) itemView.findViewById(R.id.entryIdTextView);
+
+            entryTextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Log.d("MainActivity", "entryTextView LongClick! : "
+                            + entryTextView.getText());
+                    entryTextView.setSelected(true);
+
+                    Log.d("MainActivity", "copying to clipboard");
+                    ClipboardManager clipboard = (ClipboardManager)view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.  newPlainText(mConfig.getUserId() ,
+                            mConfig.getUserId()+":"+entryTextView.getText());
+                    clipboard.setPrimaryClip(clip);
+                    return true;
+                }
+            });
             //league = (TextView) itemView.findViewById(R.id.tvLeague);
             //yearEstablished = (TextView) itemView.findViewById(R.id.tvYear);
         }
+
+
     }
 
     public EntryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
