@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     getCurrentEntryButton = (Button) rootView.findViewById(R.id.getCurrentEntry);
                     pullEntryButton = (Button) rootView.findViewById(R.id.pullEntry);
                     checkBoxLayout = (LinearLayout) rootView.findViewById(R.id.check_add_layout);
+
                     entryIdEditText.setText("test");
                     if (currentValue != null){
                         entryIdEditText.setText(currentValue);
@@ -324,6 +325,15 @@ public class MainActivity extends AppCompatActivity {
                 CheckBox checkBox = new CheckBox(view.getContext());
                 checkBox.setId(new Random().nextInt());
                 checkBox.setText(s);
+                checkBox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("MainActivity", "checkBox clicked!");
+                        CheckBox localCheckBox = (CheckBox)view;
+                        Log.d("MainActivity", "I am checked : " + localCheckBox.isChecked());
+
+                    }
+                });
                 checkBoxLayout.addView(checkBox);
             }
         }
