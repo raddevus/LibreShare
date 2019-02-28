@@ -296,10 +296,15 @@ public class MainActivity extends AppCompatActivity {
 
         private void getAllEntries(final RecyclerView rvEntries){
             fdb.getReference().child(mConfig.getUserId())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
+                    //changed to addValueEventListener from the
+                    // .addListenerForSingleValueEvent() since I want the list to update
+                    // when the user adds a new one.
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        // clear it first so when one is added the list isn't doubled.
+                        adapter.allEntries.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Entry localEntry = snapshot.getValue(Entry.class);
                             adapter.allEntries.add(localEntry);
