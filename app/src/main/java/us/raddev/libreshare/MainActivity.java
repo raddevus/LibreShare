@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         Entry entry;
         private static String currentValue;
         private static Entry currentEntry;
-        private static boolean specialCase = false;
 
         EntryAdapter adapter;
         List<Entry> entryList = new ArrayList<>();
@@ -279,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Log.d("MainActivity", "In pullEntry");
-                            specialCase=true;
                             registerWatcherWithValue();
                         }
                     });
