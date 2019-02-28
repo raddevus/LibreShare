@@ -19,11 +19,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name, league, yearEstablished;
+        TextView entryTextView, league, yearEstablished;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.entryIdTextView);
+            entryTextView = (TextView) itemView.findViewById(R.id.entryIdTextView);
             //league = (TextView) itemView.findViewById(R.id.tvLeague);
             //yearEstablished = (TextView) itemView.findViewById(R.id.tvYear);
         }
@@ -37,7 +37,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(EntryAdapter.ViewHolder holder, int position) {
-        holder.name.setText(allEntries.get(position).get_id());
+        holder.entryTextView.setText(allEntries.get(position).get_id());
         //holder.league.setText(allEntries.get(position).getLeague());
         //holder.yearEstablished.setText(String.valueOf(allEntries.get(position).getYearEstablished()));
     }
