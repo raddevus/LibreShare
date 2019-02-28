@@ -202,8 +202,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             //saveEntryMessages();
-                            Entry x = new Entry();
-                            x.get_allMessages().add("First One");
+                            Entry x = new Entry("First One");
                             fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
                             currentEntry = x;
                             newItemEditText.setText(currentEntry.get_id());
@@ -321,10 +320,10 @@ public class MainActivity extends AppCompatActivity {
 
         private void addCheckBoxes(View view){
             checkBoxLayout.removeAllViews();
-            for (String s : currentEntry.get_allMessages()) {
+            for (Message m : currentEntry.get_allMessages()) {
                 CheckBox checkBox = new CheckBox(view.getContext());
                 checkBox.setId(new Random().nextInt());
-                checkBox.setText(s);
+                checkBox.setText(m.Note);
                 checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -380,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void writeNewEntry() {
-            entry = new Entry();
+            entry = new Entry("test");
             //DatabaseReference dbf = database.getReference(mConfig.getUserId());
 //            if (dbf == null){
 //                database.getReference().setValue(mConfig.getUserId());
@@ -395,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
         public void saveEntryMessages(){
             DatabaseReference dbf = null;
             if (entry == null){
-                entry = new Entry();
+                entry = new Entry("First");
                 dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
                 if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
                     dbf.setValue(entry);
@@ -413,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!newItemEditText.getText().equals("")){
-                entry.get_allMessages().add(newItemEditText.getText().toString());
+                entry.get_allMessages().add(new Message(newItemEditText.getText().toString()));
                 dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
                 if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
                     dbf.setValue(entry.get_allMessages());

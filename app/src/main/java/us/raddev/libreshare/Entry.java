@@ -22,16 +22,21 @@ public class Entry {
     private String _ownerId;
     private Context _context;
 
-    public List<String> get_allMessages() {
+    public List<Message> get_allMessages() {
         return _allMessages;
     }
 
-    public List<String> _allMessages;
+    public List<Message> _allMessages;
 
     public Entry(){
+
+    }
+
+    public Entry(String note){
         // Default constructor required for calls to DataSnapshot.getValue(Entry.class)
         this._id = Config.generateId();
-        this._allMessages = new ArrayList<String>();
+        this._allMessages = new ArrayList<Message>();
+        this._allMessages.add(new Message(note));
     }
 
     public Entry(Context context, String ownerId) {
