@@ -35,7 +35,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -331,7 +333,17 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("MainActivity", "checkBox clicked!");
                         CheckBox localCheckBox = (CheckBox)view;
                         Log.d("MainActivity", "I am checked : " + localCheckBox.isChecked());
+                        String noteText = localCheckBox.getText().toString();
+                        for (Message msg : currentEntry.get_allMessages()){
+                            if (msg.Note.equals(noteText)){
+                                msg.isComplete = localCheckBox.isChecked();
+                                fdb.getReference().child(mConfig.getUserId()).
+                                        child(currentEntry.get_id())
+                                        .setValue(currentEntry);
+                                return;
+                            }
 
+                        }
                     }
                 });
                 checkBoxLayout.addView(checkBox);
