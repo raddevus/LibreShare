@@ -29,17 +29,19 @@ public class Entry {
     public List<Message> _allMessages;
 
     public Entry(){
-
+        Message.InitCounter();
     }
 
     public Entry(String note){
         // Default constructor required for calls to DataSnapshot.getValue(Entry.class)
+        this();
         this._id = Config.generateId();
         this._allMessages = new ArrayList<Message>();
         this._allMessages.add(new Message(note));
     }
 
     public Entry(Context context, String ownerId) {
+        this();
         this._context = context;
         this._ownerId = ownerId;
         this._id = Config.generateId();

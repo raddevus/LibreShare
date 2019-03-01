@@ -35,8 +35,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -340,6 +343,8 @@ public class MainActivity extends AppCompatActivity {
 
         private void addCheckBoxes(View view){
             checkBoxLayout.removeAllViews();
+            Collections.sort(currentEntry.get_allMessages(),new MessageCompare());
+
             for (Message m : currentEntry.get_allMessages()) {
                 CheckBox checkBox = new CheckBox(view.getContext());
                 checkBox.setId(new Random().nextInt());
@@ -478,6 +483,20 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             // Show 3 total pages.
             return 4;
+        }
+    }
+
+    public static class MessageCompare implements Comparator<Message> {
+        @Override
+        public int compare(Message message, Message t1) {
+            // this comparison code causes them to sort in reverse order
+            if (message.id < t1.id){
+                return 1;
+            }
+            if (message.id > t1.id){
+                return -1;
+            }
+            return 0;
         }
     }
 }
