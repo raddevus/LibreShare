@@ -37,10 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -343,9 +340,24 @@ public class MainActivity extends AppCompatActivity {
 
         private void addCheckBoxes(View view){
             checkBoxLayout.removeAllViews();
-            Collections.sort(currentEntry.get_allMessages(),new MessageCompare());
+            List<Message> completeItems = new ArrayList<Message>();
+            List<Message> incompleteItems = new ArrayList<Message>();
+            for (Message m : currentEntry.get_allMessages())
+            {
+               if (m.isComplete){
+                   completeItems.add(m);
+               }
+               else{
+                   incompleteItems.add(m);
+               }
+            }
+            Collections.sort(incompleteItems,new MessageCompare());
+            collateAllMessages(incompleteItems, view);
+            collateAllMessages(completeItems, view);
+        }
 
-            for (Message m : currentEntry.get_allMessages()) {
+        private void collateAllMessages(List<Message> allMessages, View view){
+            for (Message m : allMessages) {
                 CheckBox checkBox = new CheckBox(view.getContext());
                 checkBox.setId(new Random().nextInt());
                 checkBox.setText(m.Note);
@@ -489,7 +501,6 @@ public class MainActivity extends AppCompatActivity {
     public static class MessageCompare implements Comparator<Message> {
         @Override
         public int compare(Message message, Message t1) {
-            // this comparison code causes them to sort in reverse order
             if (message.id < t1.id){
                 return 1;
             }
