@@ -3,7 +3,9 @@ package us.raddev.libreshare;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.BackgroundColorSpan;
@@ -63,6 +65,17 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
                             mConfig.getUserId()+":"+entryTextView.getText());
                     clipboard.setPrimaryClip(clip);
                     previousStyle = spannableStyle;
+
+
+                    Intent newIntent = new Intent(view.getContext(), MainActivity.class);
+                    newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("TABNUMBER",1);
+                    bundle.putString("LIBRE_LINK", mConfig.getUserId()+":"+entryTextView.getText());
+                    newIntent.putExtras(bundle);
+
+                    view.getContext().startActivity(newIntent);
+
                     return true;
                 }
             });

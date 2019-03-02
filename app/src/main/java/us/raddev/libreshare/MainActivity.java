@@ -1,5 +1,6 @@
 package us.raddev.libreshare;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     public static Config mConfig;
     public static String ownerId;
+    public static String libreLink;
 
     FirebaseDatabase database;
 
@@ -95,6 +97,18 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Intent incoming = getIntent();
+        if (incoming != null) {
+            Bundle bundle = incoming.getExtras();
+            if (bundle != null) {
+                int x = bundle.getInt("TABNUMBER", -1);
+                libreLink = bundle.getString("LIBRE_LINK");
+                if (x > -1) {
+                    mViewPager.setCurrentItem(x);
+                }
+            }
+        }
     }
 
     @Override
@@ -246,11 +260,16 @@ public class MainActivity extends AppCompatActivity {
                     addMessageButton = (Button)rootView.findViewById(R.id.addMessageButton);
                     checkBoxLayout = (LinearLayout) rootView.findViewById(R.id.check_add_layout);
 
-                    entryIdEditText.setText("test");
-                    if (currentValue != null){
-                        entryIdEditText.setText(currentValue);
-                    }
                     fdb = FirebaseDatabase.getInstance();
+
+                    entryIdEditText.setText("test");
+                    if (libreLink != null){
+                        entryIdEditText.setText(libreLink);
+                        libreLink = null;
+                        registerWatcherWithValue();
+                        outputEditText.setText("");
+                    }
+
                     entryIdEditText.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
