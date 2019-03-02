@@ -393,14 +393,16 @@ public class MainActivity extends AppCompatActivity {
                     // Get Post object and use the values to update the UI
                     Entry entry = dataSnapshot.getValue(Entry.class);
                     //set latest value -
-                    if (currentValue != null && entry.get_allMessages().size() > 0) {
-                        currentValue = entry.get_allMessages().get(0).toString();
-                        currentEntry = entry;
+                    if (entry != null) {
+                        if (currentValue != null && entry.get_allMessages().size() > 0) {
+                            currentValue = entry.get_allMessages().get(0).toString();
+                            currentEntry = entry;
+                        }
+                        if (checkBoxLayout != null) {
+                            addCheckBoxes(checkBoxLayout.getRootView());
+                        }
+                        Log.d("MainActivity", "currentValue : " + currentValue);
                     }
-                    if (checkBoxLayout != null) {
-                        addCheckBoxes(checkBoxLayout.getRootView());
-                    }
-                    Log.d("MainActivity", "currentValue : " + currentValue);
                 }
 
                 @Override
@@ -410,6 +412,7 @@ public class MainActivity extends AppCompatActivity {
                     // ...
                 }
             };
+
             Log.d("MainActivity", "registerWatcherWithValue...");
             String userId = null;
             String entryId = null;
@@ -417,7 +420,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "entryIdEditText not NULL!");
                 String [] allResults = entryIdEditText.getText().toString().split(":");
                 MainActivity.ownerId = userId = allResults[0];
-                entryId = allResults[1];
+                try {
+                    // if this throws an exception, it is because there was no colon
+                    // in the string and not a valid link address
+                    entryId = allResults[1];
+                }
+                catch(Exception ex){
+                    return;
+                }
                 Log.d("MainActivity", userId + "--" + entryId);
                 fdb.getReference().child(userId).child(entryId).addValueEventListener(listener);
             }
