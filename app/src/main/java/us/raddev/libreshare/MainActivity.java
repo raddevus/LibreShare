@@ -525,6 +525,24 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 4;
         }
+        @Override
+        public CharSequence getPageTitle (int position) {
+            switch(position){
+                case 0:{
+                    return "MAIN";
+                }
+                case 1:{
+                    return "MESSAGES";
+                }
+                case 2:{
+                    return "EXTRA";
+                }
+                case 3:{
+                    return "UNUSED";
+                }
+            }
+            return "";
+        }
     }
 
     public static class MessageCompare implements Comparator<Message> {
