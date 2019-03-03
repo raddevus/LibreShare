@@ -19,7 +19,6 @@ public class Entry {
     }
 
     private String _id;
-    private String _ownerId;
     private Context _context;
 
     public List<Message> get_allMessages() {
@@ -38,17 +37,5 @@ public class Entry {
         this._id = Config.generateId();
         this._allMessages = new ArrayList<Message>();
         this._allMessages.add(new Message(note));
-    }
-
-    public Entry(Context context, String ownerId) {
-        this();
-        this._context = context;
-        this._ownerId = ownerId;
-        this._id = Config.generateId();
-    }
-
-    public void initPreferences(){
-        SharedPreferences configPrefs = _context.getApplicationContext().getSharedPreferences("ownerId", Context.MODE_PRIVATE);
-        _ownerId = configPrefs.getString("ownerId", null);
     }
 }
