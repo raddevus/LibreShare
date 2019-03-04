@@ -1,8 +1,10 @@
 package us.raddev.libreshare;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -244,10 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             //saveEntryMessages();
-                            Entry x = new Entry("First One");
-                            fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
-                            currentEntry = x;
-                            newItemEditText.setText(currentEntry.get_id());
+                            showTitleDialog();
                         }
                     });
 
@@ -355,6 +354,42 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return rootView;
+        }
+
+        private void showTitleDialog(){
+            LayoutInflater li = LayoutInflater.from(getContext());
+            final View v = li.inflate(R.layout.add_title_dialog, null);
+
+            AlertDialog.Builder builder =
+                    new AlertDialog.Builder(v.getContext());
+
+            builder.setMessage( "Add title").setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            EditText input = (EditText) v.findViewById(R.id.titleText);
+                            String title = input.getText().toString();
+                            String outValues = "test";
+                            Log.d("MainActivity", "outValues : " + outValues);
+
+                            Entry x = new Entry("First One",title);
+                            fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
+                            currentEntry = x;
+                            newItemEditText.setText(currentEntry.get_id());
+                            //PlaceholderFragment.loadSitesFromPrefs(v);
+
+                        }
+                    })
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.setView(v);
+            alert.show();
         }
 
         private void getAllEntries(final RecyclerView rvEntries){
@@ -484,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void writeNewEntry() {
-            entry = new Entry("test");
+            entry = new Entry("test",null);
             //DatabaseReference dbf = database.getReference(mConfig.getUserId());
 //            if (dbf == null){
 //                database.getReference().setValue(mConfig.getUserId());
@@ -499,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
         public void saveEntryMessages(){
             DatabaseReference dbf = null;
             if (entry == null){
-                entry = new Entry("First");
+                entry = new Entry("First",null);
                 dbf = database.getReference(mConfig.getUserId()).child(entry.get_id());
                 if (entry.get_allMessages() != null && !entry.get_allMessages().isEmpty()) {
                     dbf.setValue(entry);

@@ -50,6 +50,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
                     Log.d("MainActivity", "entryTextView LongClick! : "
                             + entryTextView.getText());
                     Log.d("MainActivity", "got focus : " + String.valueOf(view.getId()));
+                    Log.d("MainActivity", "haptic is enabled : " + entryTextView.isHapticFeedbackEnabled ());
                     entryTextView.performHapticFeedback(LONG_PRESS);
 
                     String initialText = entryTextView.getText().toString();

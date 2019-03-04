@@ -17,7 +17,7 @@ public class Entry {
     public String get_id() {
         return _id;
     }
-
+    public String title;
     private String _id;
     private Context _context;
 
@@ -31,10 +31,11 @@ public class Entry {
         Message.InitCounter();
     }
 
-    public Entry(String note){
+    public Entry(String note, String title){
         // Default constructor required for calls to DataSnapshot.getValue(Entry.class)
         this();
         this._id = Config.generateId();
+        this.title = title;
         this._allMessages = new ArrayList<Message>();
         this._allMessages.add(new Message(note));
     }
