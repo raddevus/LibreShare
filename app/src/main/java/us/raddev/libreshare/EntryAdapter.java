@@ -1,5 +1,6 @@
 package us.raddev.libreshare;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -65,16 +66,8 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
                             mConfig.getUserId()+":"+entryTextView.getText());
                     clipboard.setPrimaryClip(clip);
                     previousStyle = spannableStyle;
-
-
-                    Intent newIntent = new Intent(view.getContext(), MainActivity.class);
-                    newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("TABNUMBER",1);
-                    bundle.putString("LIBRE_LINK", mConfig.getUserId()+":"+entryTextView.getText());
-                    newIntent.putExtras(bundle);
-
-                    view.getContext().startActivity(newIntent);
+                    MainActivity activity = (MainActivity) entryTextView.getContext();
+                    activity.openTab(1,mConfig.getUserId()+":"+entryTextView.getText());
 
                     return true;
                 }

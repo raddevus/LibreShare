@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
     public static Config mConfig;
     public static String ownerId;
     public static String libreLink;
@@ -107,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    void openTab(int tabIndex, String libreLink){
+        MainActivity.libreLink = libreLink;
+        mViewPager.setCurrentItem(tabIndex);
     }
 
     @Override
@@ -189,6 +194,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            Log.d("MainActivity", "setUserVisibleHint");
+            if (isVisibleToUser) {
+                Log.d("MainActivity", "isvisibletouser");
+                if (MainActivity.libreLink != null) {
+                    entryIdEditText = (EditText) getView().findViewById(R.id.entryId);
+                    if (entryIdEditText != null) {
+                        entryIdEditText.setText(MainActivity.libreLink);
+                        MainActivity.libreLink = null;
+                        registerWatcherWithValue();
+                    }
+                    //outputEditText.setText("");
+                }
+            }
+            else {
+            }
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             int section = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -249,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 case 2:
                 {
+                    Log.d("MainActivity","case 2: OnCreateView...");
                     database = FirebaseDatabase.getInstance();
                     rootView = inflater.inflate(R.layout.fragment_entry_list, container, false);
                     entryIdEditText = (EditText)  rootView.findViewById(R.id.entryId);
@@ -261,9 +287,9 @@ public class MainActivity extends AppCompatActivity {
                     fdb = FirebaseDatabase.getInstance();
 
                     entryIdEditText.setText("test");
-                    if (libreLink != null){
-                        entryIdEditText.setText(libreLink);
-                        libreLink = null;
+                    if (MainActivity.libreLink != null){
+                        entryIdEditText.setText(MainActivity.libreLink);
+                        MainActivity.libreLink = null;
                         registerWatcherWithValue();
                         outputEditText.setText("");
                     }
@@ -515,6 +541,7 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            Log.d("MainActivity", "Fragment " + String.valueOf(position));
             return PlaceholderFragment.newInstance(position + 1);
         }
 
@@ -523,8 +550,10 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 4;
         }
+
         @Override
         public CharSequence getPageTitle (int position) {
+
             switch(position){
                 case 0:{
                     return "MAIN";
