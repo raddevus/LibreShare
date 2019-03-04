@@ -64,11 +64,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
                     Log.d("MainActivity", "copying to clipboard");
                     ClipboardManager clipboard = (ClipboardManager)view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.  newPlainText(mConfig.getUserId() ,
-                            mConfig.getUserId()+":"+entryTextView.getText());
+                            mConfig.getUserId()+":"+entryTextView.getTag());
                     clipboard.setPrimaryClip(clip);
                     previousStyle = spannableStyle;
                     MainActivity activity = (MainActivity) entryTextView.getContext();
-                    activity.openTab(1,mConfig.getUserId()+":"+entryTextView.getText());
+                    activity.openTab(1,mConfig.getUserId()+":"+entryTextView.getTag().toString());
 
                     return true;
                 }
@@ -102,7 +102,13 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(EntryAdapter.ViewHolder holder, int position) {
-        holder.entryTextView.setText(allEntries.get(position).get_id());
+        if (allEntries.get(position).title != null && !allEntries.get(position).title.equals("")){
+            holder.entryTextView.setText(allEntries.get(position).title);
+        }
+        else {
+            holder.entryTextView.setText(allEntries.get(position).get_id());
+        }
+        holder.entryTextView.setTag(allEntries.get(position).get_id());
         //holder.league.setText(allEntries.get(position).getLeague());
         //holder.yearEstablished.setText(String.valueOf(allEntries.get(position).getYearEstablished()));
     }

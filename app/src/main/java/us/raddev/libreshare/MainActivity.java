@@ -335,7 +335,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("MainActivity", "In pullEntry");
                             String newMsgTxt = outputEditText.getText().toString();
                             if (currentEntry != null && !newMsgTxt.isEmpty()) {
-                                currentEntry.get_allMessages().add(new Message(newMsgTxt));
+                                Message m = new Message(newMsgTxt);
+                                currentEntry.get_allMessages().add(m);
                                 fdb.getReference().child(MainActivity.ownerId).
                                         child(currentEntry.get_id())
                                         .setValue(currentEntry);
@@ -370,10 +371,11 @@ public class MainActivity extends AppCompatActivity {
 
                             EditText input = (EditText) v.findViewById(R.id.titleText);
                             String title = input.getText().toString();
+                            Log.d("MainActivity","title : " + title);
                             String outValues = "test";
                             Log.d("MainActivity", "outValues : " + outValues);
 
-                            Entry x = new Entry("First One",title);
+                            Entry x = new Entry("",title);
                             fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
                             currentEntry = x;
                             newItemEditText.setText(currentEntry.get_id());
