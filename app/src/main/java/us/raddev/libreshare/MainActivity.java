@@ -424,12 +424,19 @@ public class MainActivity extends AppCompatActivity {
             List<Message> incompleteItems = new ArrayList<Message>();
             for (Message m : currentEntry.get_allMessages())
             {
-               if (m.isComplete){
+                // I added this because the initial creation
+                // of an entry creates an emtpy message and
+                // this suppresses that item.  I can figure
+                // out a way around this later.
+                if (m.Note == null || m.Note.isEmpty()){
+                    continue;
+                }
+                if (m.isComplete){
                    completeItems.add(m);
-               }
-               else{
+                }
+                else{
                    incompleteItems.add(m);
-               }
+                }
             }
             Collections.sort(incompleteItems,new MessageCompare());
             collateAllMessages(incompleteItems, view);
