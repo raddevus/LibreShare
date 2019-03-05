@@ -208,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.libreLink = null;
                         registerWatcherWithValue();
                     }
-                    //outputEditText.setText("");
                 }
             }
             else {
@@ -262,14 +261,12 @@ public class MainActivity extends AppCompatActivity {
                     fdb = FirebaseDatabase.getInstance();
                     currentValue = "garbage";
 
-                    RecyclerView rvEntries = (RecyclerView) rootView.findViewById(R.id.entryRecyclerView);
+                    RecyclerView EntryViewRecyclerView = (RecyclerView) rootView.findViewById(R.id.entryRecyclerView);
                     RecyclerView.LayoutManager manager = new LinearLayoutManager(rootView.getContext());
-                    rvEntries.setLayoutManager(manager);
+                    EntryViewRecyclerView.setLayoutManager(manager);
                     adapter = new EntryAdapter(entryList);
-                    getAllEntries(rvEntries);
-                    //setEntryData();
+                    getAllEntries(EntryViewRecyclerView);
                     break;
-
                 }
                 case 2:
                 {
