@@ -92,6 +92,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
         }
     }
 
+    @Override
     public EntryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row,parent, false);
 
@@ -111,6 +112,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder>{
         //holder.yearEstablished.setText(String.valueOf(allEntries.get(position).getYearEstablished()));
     }
 
+    @Override
     public int getItemCount() {
         return allEntries.size();
     }
