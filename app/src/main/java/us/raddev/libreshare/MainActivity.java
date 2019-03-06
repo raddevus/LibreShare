@@ -1,5 +1,8 @@
 package us.raddev.libreshare;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -375,9 +378,7 @@ public class MainActivity extends AppCompatActivity {
                             Entry x = new Entry("",title);
                             fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
                             currentEntry = x;
-                            newItemEditText.setText(currentEntry.get_id());
-                            //PlaceholderFragment.loadSitesFromPrefs(v);
-
+                            loadNewEntry();
                         }
                     })
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -389,6 +390,16 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog alert = builder.create();
             alert.setView(v);
             alert.show();
+        }
+
+        private void loadNewEntry(){
+            MainActivity.libreLink = mConfig.getUserId()+":"+currentEntry.get_id();
+            ClipboardManager clipboard = (ClipboardManager)getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(mConfig.getUserId() ,
+                    MainActivity.libreLink);
+            clipboard.setPrimaryClip(clip);
+
+            mViewPager.setCurrentItem(1);
         }
 
         private void getAllEntries(final RecyclerView rvEntries){
