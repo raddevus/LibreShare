@@ -379,6 +379,8 @@ public class MainActivity extends AppCompatActivity {
                             fdb.getReference().child(mConfig.getUserId()).child(x.get_id()).setValue(x);
                             currentEntry = x;
                             loadNewEntry();
+                            RecyclerView rv = getView().findViewById(R.id.entryRecyclerView);
+                            getAllEntries(rv);
                         }
                     })
                     .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -404,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
 
         private void getAllEntries(final RecyclerView rvEntries){
             fdb.getReference().child(MainActivity.ownerId)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     //changed to addValueEventListener from the
                     // .addListenerForSingleValueEvent() since I want the list to update
                     // when the user adds a new one.
