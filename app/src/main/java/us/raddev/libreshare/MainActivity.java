@@ -483,6 +483,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void registerWatcherWithValue(){
+            fdb = FirebaseDatabase.getInstance();
             listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
