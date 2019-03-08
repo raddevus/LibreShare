@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         private Button deleteItemButton;
         private Button pullEntryButton;
         private Button addMessageButton;
+        private EditText titleText;
 
         FirebaseDatabase database;
         ValueEventListener entryListener;
@@ -282,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                     pullEntryButton = (Button) rootView.findViewById(R.id.pullEntry);
                     addMessageButton = (Button)rootView.findViewById(R.id.addMessageButton);
                     checkBoxLayout = (LinearLayout) rootView.findViewById(R.id.check_add_layout);
+                    titleText = (EditText)rootView.findViewById(R.id.titleText);
 
                     fdb = FirebaseDatabase.getInstance();
 
@@ -482,6 +484,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        private void setViewTitleText(){
+            titleText = (EditText)getView().findViewById(R.id.titleText);
+            if (titleText != null) {
+                titleText.setText(currentEntry.title);
+            }
+        }
+
         private void registerWatcherWithValue(){
             fdb = FirebaseDatabase.getInstance();
             listener = new ValueEventListener() {
@@ -495,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
                         if (currentValue != null && entry.get_allMessages().size() > 0) {
                             currentValue = entry.get_allMessages().get(0).toString();
                             currentEntry = entry;
+                            setViewTitleText();
                         }
                         if (checkBoxLayout != null) {
                             addCheckBoxes(checkBoxLayout.getRootView());
